@@ -23,11 +23,9 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::all();
+        $projects = Project::paginate(5);
 
-        return view('project.index')->with([
-            'project' => $projects
-        ]);
+        return view('project.index')->with(compact('projects'));
     }
     
 
@@ -116,5 +114,14 @@ class ProjectController extends Controller
     public function destroy(Project $project)
     {
         //
+    }
+
+    public function search(){
+
+        $search_text = $_GET['query'];
+
+        $projects = Project::where('name', 'LIKE', '%'.$search_text.'%')->get();
+
+        return view('project.search')->with(compact('projects'));
     }
 }

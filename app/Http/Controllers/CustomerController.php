@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Customer;
+use App\Project;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
@@ -68,9 +69,10 @@ class CustomerController extends Controller
      */
     public function show(Customer $customer)
     {
-        return view('customer.show')->with([
-            'customer' => $customer
-        ]);
+        //Get projects from customer
+        $customer_projects = Project::where('customer_id', '=', $customer->id)->get();
+
+        return view('customer.show')->with(compact('customer', 'customer_projects'));
     }
 
     /**
@@ -105,5 +107,14 @@ class CustomerController extends Controller
     public function destroy(Customers $customers)
     {
         //
+    }
+
+    public function search(){
+
+        $search_text = $_GET['query'];
+
+        $customers = Customer::where('name', 'LIKE', '%'.$search_text.'%')->get();
+
+        return view('customer.search')->with(compact('customers'));
     }
 }
